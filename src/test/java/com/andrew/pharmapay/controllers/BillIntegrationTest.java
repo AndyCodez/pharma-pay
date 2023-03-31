@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,7 +38,7 @@ class BillIntegrationTest {
     public void createBill_withValidData_shouldReturnCreated() throws Exception {
         Date billDate = new Date();
 
-        Bill bill = new Bill(new BigDecimal(20), billDate);
+        Bill bill = new Bill(new BigDecimal(20), billDate, new HashSet<>());
 
         ObjectMapper objectMapper = new ObjectMapper();
 

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Entity
 public class Item {
@@ -25,6 +26,9 @@ public class Item {
     @Min(value = 1, message = "Quantity must be greater than or equal to 1")
     @Column(name = "quantity")
     private int quantity;
+
+    @ManyToMany(mappedBy = "items", fetch = FetchType.LAZY)
+    private Set<Bill> bills;
 
     public Item() {
     }
