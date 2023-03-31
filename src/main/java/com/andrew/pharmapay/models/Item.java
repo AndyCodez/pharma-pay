@@ -1,7 +1,9 @@
 package com.andrew.pharmapay.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
@@ -15,11 +17,12 @@ public class Item {
     @Column(name = "name")
     private String name;
 
-    @NotBlank(message = "Price is required")
+    @NotNull(message = "Price is required")
     @Column(name = "price")
+    @Min(value = 1, message = "Price must be greater than or equal to 1")
     private BigDecimal price;
 
-    @NotBlank(message = "Quantity is required")
+    @Min(value = 1, message = "Quantity must be greater than or equal to 1")
     @Column(name = "quantity")
     private int quantity;
 
