@@ -2,7 +2,10 @@ package com.andrew.pharmapay.services;
 
 import com.andrew.pharmapay.models.Pharmacist;
 import com.andrew.pharmapay.repositories.PharmacistRepository;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class PharmacistService {
@@ -12,7 +15,11 @@ public class PharmacistService {
         this.pharmacistRepository = pharmacistRepository;
     }
 
-    public Pharmacist createPharamacist(Pharmacist pharmacist) {
-        return pharmacistRepository.save(pharmacist);
+    public Pharmacist createPharmacist(Pharmacist pharmacist) {
+        try {
+            return pharmacistRepository.save(pharmacist);
+        } catch (DataIntegrityViolationException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email address already taken");
+        }
     }
 }
