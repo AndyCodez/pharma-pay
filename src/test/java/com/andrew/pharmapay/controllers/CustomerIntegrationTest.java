@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -48,6 +49,20 @@ class CustomerIntegrationTest {
         assertEquals("John", allCustomers.get(0).getFirstName());
     }
 
+    @Test
+    public void createCustomer_withMissingFields_shouldReturnBadRequest() throws Exception {
+        Customer customer = new Customer("", "");
 
+        ObjectMapper objectMapper = new ObjectMapper();
 
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/customers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(customer)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andReturn();
+
+        String responseBody = result.getResponse().getContentAsString();
+        assertTrue(responseBody.contains("First name is required"));
+        assertTrue(responseBody.contains("Last name is required"));
+    }
 }
