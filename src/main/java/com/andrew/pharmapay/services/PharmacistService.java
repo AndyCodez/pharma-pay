@@ -19,6 +19,7 @@ public class PharmacistService {
         try {
             return pharmacistRepository.save(pharmacist);
         } catch (DataIntegrityViolationException e) {
+            // TODO: Log stack trace
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email address already taken");
         }
     }
