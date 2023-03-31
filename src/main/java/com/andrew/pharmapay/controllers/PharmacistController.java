@@ -46,9 +46,4 @@ public class PharmacistController {
         return new FailedResponse(errors);
     }
 
-    @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<FailedResponse> handleException(ResponseStatusException ex) {
-        FailedResponse failedResponse = new FailedResponse(Arrays.asList(ex.getReason()));
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(failedResponse);
-    }
 }
