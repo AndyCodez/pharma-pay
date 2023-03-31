@@ -26,24 +26,12 @@ public class PharmacistController {
     }
 
     @PostMapping("/pharmacists")
-    public ResponseEntity<?> createPharmacistUser(@Valid @RequestBody Pharmacist pharmacist, BindingResult result) {
-        if (result.hasErrors()) {
-            FailedResponse failedResponse = getErrorMessages(result);
-            return ResponseEntity.badRequest().body(failedResponse);
-        }
-
+    public ResponseEntity<?> createPharmacistUser(@Valid @RequestBody Pharmacist pharmacist) {
         Pharmacist createdPharmacist= pharmacistService.createPharmacist(pharmacist);
 
         return ResponseEntity.created(
                 URI.create("/api/v1/pharmacists/" + createdPharmacist.getId())
         ).body(createdPharmacist);
-    }
-
-    private static FailedResponse getErrorMessages(BindingResult result) {
-        List<String> errors = result.getAllErrors().stream()
-                                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                                    .toList();
-        return new FailedResponse(errors);
     }
 
 }
