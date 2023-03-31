@@ -1,17 +1,26 @@
 package com.andrew.pharmapay.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 public class Pharmacist {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @NotBlank(message = "First name is required")
     @Column(name = "first_name")
     private String firstName;
+
+    @NotBlank(message = "Last name is required")
     @Column(name = "last_name")
     private String lastName;
-    @Column(name = "email")
+
+    @NotBlank(message = "Email address is required")
+    @Pattern(regexp = "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$", message = "Invalid email address")
+    @Column(name = "email", unique = true)
     private String email;
 
     public Pharmacist() {
