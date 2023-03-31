@@ -1,7 +1,6 @@
 package com.andrew.pharmapay.controllers;
 
 import com.andrew.pharmapay.models.Customer;
-import com.andrew.pharmapay.models.Pharmacist;
 import com.andrew.pharmapay.repositories.CustomerRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -33,7 +32,7 @@ class CustomerIntegrationTest {
     }
 
     @Test
-    public void createPharmacist_withValidData_shouldReturnCreated() throws Exception {
+    public void createCustomer_withValidData_shouldReturnCreated() throws Exception {
         Customer customer = new Customer("John", "Doe");
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -48,4 +47,7 @@ class CustomerIntegrationTest {
         assertEquals(1, allCustomers.size());
         assertEquals("John", allCustomers.get(0).getFirstName());
     }
+
+
+
 }
