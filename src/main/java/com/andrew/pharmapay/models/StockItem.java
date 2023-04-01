@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.Set;
 
 @Entity
-public class Item {
+public class StockItem {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -27,13 +27,13 @@ public class Item {
     @Column(name = "quantity")
     private int quantity;
 
-    @ManyToMany(mappedBy = "items", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "stockItems", fetch = FetchType.LAZY)
     private Set<Bill> bills;
 
-    public Item() {
+    public StockItem() {
     }
 
-    public Item(String name, BigDecimal price, int quantity) {
+    public StockItem(String name, BigDecimal price, int quantity) {
         this.name = name;
         this.price = price;
         this.quantity = quantity;

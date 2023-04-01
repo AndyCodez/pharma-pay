@@ -22,17 +22,17 @@ public class Bill {
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "bill_item",
             joinColumns = { @JoinColumn(name = "bill_id", referencedColumnName = "id") },
-            inverseJoinColumns = { @JoinColumn(name = "item_id", referencedColumnName = "id") }
+            inverseJoinColumns = { @JoinColumn(name = "stock_item_id", referencedColumnName = "id") }
     )
-    private Set<Item> items;
+    private Set<StockItem> stockItems;
 
     public Bill() {
     }
 
-    public Bill(BigDecimal amount, Date billDateTime, Set<Item> items) {
+    public Bill(BigDecimal amount, Date billDateTime, Set<StockItem> stockItems) {
         this.amount = amount;
         this.billDateTime = billDateTime;
-        this.items = items;
+        this.stockItems = stockItems;
     }
 
     public Long getId() {
@@ -59,11 +59,11 @@ public class Bill {
         this.billDateTime = billDateTime;
     }
 
-    public Set<Item> getItems() {
-        return items;
+    public Set<StockItem> getStockItems() {
+        return stockItems;
     }
 
-    public void setItems(Set<Item> items) {
-        this.items = items;
+    public void setStockItems(Set<StockItem> stockItems) {
+        this.stockItems = stockItems;
     }
 }
