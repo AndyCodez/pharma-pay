@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -13,7 +14,7 @@ public class Bill {
     private Long id;
 
     @Column(name = "amount")
-    private BigDecimal amount;
+    private BigDecimal amount = BigDecimal.ZERO;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "bill_date_time")
@@ -22,17 +23,17 @@ public class Bill {
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "bill_item",
             joinColumns = { @JoinColumn(name = "bill_id", referencedColumnName = "id") },
-            inverseJoinColumns = { @JoinColumn(name = "stock_item_id", referencedColumnName = "id") }
+            inverseJoinColumns = { @JoinColumn(name = "sold_item_id", referencedColumnName = "id") }
     )
-    private Set<StockItem> stockItems;
+    private Set<SoldItem> soldItems = new HashSet<>();
 
     public Bill() {
     }
 
-    public Bill(BigDecimal amount, Date billDateTime, Set<StockItem> stockItems) {
+    public Bill(BigDecimal amount, Date billDateTime, Set<SoldItem> soldItems) {
         this.amount = amount;
         this.billDateTime = billDateTime;
-        this.stockItems = stockItems;
+        this.soldItems = soldItems;
     }
 
     public Long getId() {
@@ -59,11 +60,11 @@ public class Bill {
         this.billDateTime = billDateTime;
     }
 
-    public Set<StockItem> getStockItems() {
-        return stockItems;
+    public Set<SoldItem> getSoldItems() {
+        return soldItems;
     }
 
-    public void setStockItems(Set<StockItem> stockItems) {
-        this.stockItems = stockItems;
+    public void setSoldItems(Set<SoldItem> soldItems) {
+        this.soldItems = soldItems;
     }
 }
