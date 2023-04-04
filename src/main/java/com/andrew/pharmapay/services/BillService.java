@@ -9,7 +9,9 @@ import com.andrew.pharmapay.models.StockItem;
 import com.andrew.pharmapay.repositories.BillRepository;
 import com.andrew.pharmapay.repositories.CustomerRepository;
 import com.andrew.pharmapay.repositories.StockItemRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -58,23 +60,18 @@ public class BillService {
     }
 
     public Bill addBillToCustomer(Long billId, Long customerId) {
-        Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
-        Optional<Bill> optionalBill = billRepository.findById(billId);
+        Customer customer =
+                customerRepository.findById(customerId).orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer record not found")
+                );
+        Bill bill = billRepository.findById(billId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Bill record not found")
+        );
 
-        if (optionalCustomer.isPresent()) {
-            Customer customer = optionalCustomer.get();
+        customer.getBills().add(bill);
+        bill.setCustomer(customer);
 
-            if (optionalBill.isPresent()) {
-                Bill bill = optionalBill.get();
-
-                customer.getBills().add(bill);
-                bill.setCustomer(customer);
-
-                customerRepository.save(customer);
-                return bill;
-            }
-        }
-
-        return null;
+        customerRepository.save(customer);
+        return bill;
     }
 }
