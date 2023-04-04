@@ -10,8 +10,7 @@ import com.andrew.pharmapay.repositories.StockItemRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class BillService {
@@ -23,27 +22,14 @@ public class BillService {
         this.stockItemRepository = stockItemRepository;
     }
 
-//    public Bill createBill(Set<SoldItem> soldItems) throws ItemNotInStockException {
-//        Bill bill = new Bill();
-//        bill.setBillDateTime(new Date());
-//        bill.setSoldItems(soldItems);
-//
-//        BigDecimal totalAmount = BigDecimal.ZERO;
-//        for (SoldItem soldItem: soldItems) {
-//            Optional<StockItem> optionalStockItem = stockItemRepository.findByName(soldItem.getName());
-//            if (optionalStockItem.isPresent()) {
-//                StockItem stockItem = optionalStockItem.get();
-//                BigDecimal itemAmount = stockItem.getPrice().multiply(BigDecimal.valueOf(soldItem.getQuantity()));
-//                totalAmount = totalAmount.add(itemAmount);
-//            } else {
-//                throw new ItemNotInStockException(soldItem.getName());
-//            }
-//        }
-//
-//        bill.setAmount(totalAmount);
-//
-//        return billRepository.save(bill);
-//    }
+    public Bill createBill(List<SoldItem> soldItems) throws ItemNotInStockException, LessItemInStockException {
+        Bill bill = new Bill();
+
+        for (SoldItem soldItem: soldItems) {
+            addItemToBill(bill, soldItem);
+        }
+        return billRepository.save(bill);
+    }
 
     public Bill addItemToBill(Bill bill, SoldItem item) throws ItemNotInStockException, LessItemInStockException {
         StockItem stockItem =  stockItemRepository.findByName(item.getName()).orElseThrow(() -> new ItemNotInStockException(item.getName()));
@@ -53,7 +39,7 @@ public class BillService {
 
         bill.setBillDateTime(new Date());
 
-        Set<SoldItem> soldItems = bill.getSoldItems();
+        List<SoldItem> soldItems = bill.getSoldItems();
         soldItems.add(item);
 
         BigDecimal itemAmount = stockItem.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
@@ -61,5 +47,9 @@ public class BillService {
         bill.setAmount(totalAmount);
 
         return bill;
+    }
+
+    public List<Bill> getAllBills() {
+        return billRepository.findAll();
     }
 }
