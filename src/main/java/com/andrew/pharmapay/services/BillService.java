@@ -79,4 +79,28 @@ public class BillService {
         return billRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Bill record not found"));
     }
+
+    public Bill completeSale(Long billId) throws ItemNotInStockException, LessItemInStockException {
+        Bill bill =
+                billRepository.findById(billId).orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Bill record not found")
+                );
+
+        List<SoldItem> soldItems = bill.getSoldItems();
+        for (SoldItem item : soldItems) {
+            StockItem stockItem =
+                    stockItemRepository.findByName(item.getName())
+                            .orElseThrow(() -> new ItemNotInStockException(item.getName()));
+            if (item.getQuantity() > stockItem.getQuantity()) {
+                throw new LessItemInStockException(stockItem);
+            }
+
+            int remainingStock = stockItem.getQuantity() - item.getQuantity();
+            stockItem.setQuantity(remainingStock);
+            stockItemRepository.save(stockItem);
+        }
+
+        bill.setBillDateTime(new Date());
+        return billRepository.save(bill);
+    }
 }
