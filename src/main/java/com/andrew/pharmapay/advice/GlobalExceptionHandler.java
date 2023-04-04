@@ -1,5 +1,6 @@
 package com.andrew.pharmapay.advice;
 
+import com.andrew.pharmapay.exceptions.BillAlreadySettledException;
 import com.andrew.pharmapay.exceptions.ItemAlreadyInStockException;
 import com.andrew.pharmapay.exceptions.ItemNotInStockException;
 import com.andrew.pharmapay.exceptions.LessItemInStockException;
@@ -45,6 +46,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ItemAlreadyInStockException.class)
     public ResponseEntity<FailedResponse> handleItemAlreadyInStockException(ItemAlreadyInStockException ex) {
+        FailedResponse failedResponse = new FailedResponse(Arrays.asList(ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(failedResponse);
+    }
+
+    @ExceptionHandler(BillAlreadySettledException.class)
+    public ResponseEntity<FailedResponse> handleBillAlreadySettledException(BillAlreadySettledException ex) {
         FailedResponse failedResponse = new FailedResponse(Arrays.asList(ex.getMessage()));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(failedResponse);
     }

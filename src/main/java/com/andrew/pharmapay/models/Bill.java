@@ -33,6 +33,9 @@ public class Bill {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+    @Enumerated
+    private Status status = Status.PENDING;
+
     public Bill() {
     }
 
@@ -80,5 +83,13 @@ public class Bill {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

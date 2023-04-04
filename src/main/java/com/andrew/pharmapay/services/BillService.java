@@ -1,11 +1,9 @@
 package com.andrew.pharmapay.services;
 
+import com.andrew.pharmapay.exceptions.BillAlreadySettledException;
 import com.andrew.pharmapay.exceptions.ItemNotInStockException;
 import com.andrew.pharmapay.exceptions.LessItemInStockException;
-import com.andrew.pharmapay.models.Bill;
-import com.andrew.pharmapay.models.Customer;
-import com.andrew.pharmapay.models.SoldItem;
-import com.andrew.pharmapay.models.StockItem;
+import com.andrew.pharmapay.models.*;
 import com.andrew.pharmapay.repositories.BillRepository;
 import com.andrew.pharmapay.repositories.CustomerRepository;
 import com.andrew.pharmapay.repositories.StockItemRepository;
@@ -86,6 +84,10 @@ public class BillService {
                         () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Bill record not found")
                 );
 
+        if (bill.getStatus().name().equals(Status.PAID.name())) {
+            throw new BillAlreadySettledException("Bill Already Settled");
+        }
+
         List<SoldItem> soldItems = bill.getSoldItems();
         for (SoldItem item : soldItems) {
             StockItem stockItem =
@@ -101,6 +103,7 @@ public class BillService {
         }
 
         bill.setBillDateTime(new Date());
+        bill.setStatus(Status.PAID);
         return billRepository.save(bill);
     }
 }
