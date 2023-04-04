@@ -4,6 +4,8 @@ import com.andrew.pharmapay.models.StockItem;
 import com.andrew.pharmapay.repositories.StockItemRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class StockItemService {
     private final StockItemRepository stockItemRepository;
@@ -14,5 +16,9 @@ public class StockItemService {
 
     public StockItem createItem(StockItem stockItem) {
         return stockItemRepository.save(stockItem);
+    }
+
+    public List<StockItem> getAllStockItems() {
+        return stockItemRepository.findAll();
     }
 }
