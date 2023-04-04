@@ -1,11 +1,10 @@
 package com.andrew.pharmapay.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Bill {
@@ -20,17 +19,15 @@ public class Bill {
     @Column(name = "bill_date_time")
     private Date billDateTime;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "bill_item",
-            joinColumns = { @JoinColumn(name = "bill_id", referencedColumnName = "id") },
-            inverseJoinColumns = { @JoinColumn(name = "sold_item_id", referencedColumnName = "id") }
-    )
-    private Set<SoldItem> soldItems = new HashSet<>();
+    @NotEmpty
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "bill_id", referencedColumnName = "id")
+    private List<SoldItem> soldItems = new ArrayList<>();
 
     public Bill() {
     }
 
-    public Bill(BigDecimal amount, Date billDateTime, Set<SoldItem> soldItems) {
+    public Bill(BigDecimal amount, Date billDateTime, List<SoldItem> soldItems) {
         this.amount = amount;
         this.billDateTime = billDateTime;
         this.soldItems = soldItems;
@@ -60,11 +57,11 @@ public class Bill {
         this.billDateTime = billDateTime;
     }
 
-    public Set<SoldItem> getSoldItems() {
+    public List<SoldItem> getSoldItems() {
         return soldItems;
     }
 
-    public void setSoldItems(Set<SoldItem> soldItems) {
+    public void setSoldItems(List<SoldItem> soldItems) {
         this.soldItems = soldItems;
     }
 }
