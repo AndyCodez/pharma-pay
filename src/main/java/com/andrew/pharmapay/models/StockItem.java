@@ -22,7 +22,6 @@ public class StockItem {
     @Min(value = 1, message = "Price must be greater than or equal to 1")
     private BigDecimal price;
 
-    @Min(value = 1, message = "Quantity must be greater than or equal to 1")
     @Column(name = "quantity")
     private int quantity;
 
