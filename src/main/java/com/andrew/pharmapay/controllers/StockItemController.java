@@ -38,4 +38,9 @@ public class StockItemController {
         stockItemService.deleteStockItem(id);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/stock-items/{stockItemId}")
+    public ResponseEntity<StockItem> updateItem(@PathVariable Long stockItemId, @Valid @RequestBody StockItem stockItem) {
+        return ResponseEntity.ok(stockItemService.updateItem(stockItemId, stockItem));
+    }
 }

@@ -35,4 +35,16 @@ public class StockItemService {
                 );
         stockItemRepository.delete(item);
     }
+
+    public StockItem updateItem(Long id, StockItem stockItem) {
+        StockItem stockItem1 =
+                stockItemRepository.findById(id).orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Stock Item record not found")
+                );
+
+        stockItem1.setName(stockItem.getName());
+        stockItem1.setQuantity(stockItem.getQuantity());
+        stockItem1.setPrice(stockItem.getPrice());
+        return stockItemRepository.save(stockItem1);
+    }
 }
