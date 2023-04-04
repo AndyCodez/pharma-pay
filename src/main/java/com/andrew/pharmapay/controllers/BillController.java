@@ -39,6 +39,11 @@ public class BillController {
         return ResponseEntity.ok(billResponse);
     }
 
+    @GetMapping("/bills/{id}")
+    public ResponseEntity<Bill> getBill(@PathVariable Long id) {
+        return ResponseEntity.ok(billService.getBill(id));
+    }
+
     @PostMapping("/add-bill-to-customer/customers/{customerId}/bills/{billId}")
     public ResponseEntity<?> addBillToCustomer(@PathVariable Long billId, @PathVariable Long customerId) {
         return ResponseEntity.ok(billService.addBillToCustomer(billId, customerId));

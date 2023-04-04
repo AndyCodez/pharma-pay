@@ -74,4 +74,9 @@ public class BillService {
         customerRepository.save(customer);
         return bill;
     }
+
+    public Bill getBill(Long id) {
+        return billRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Bill record not found"));
+    }
 }
