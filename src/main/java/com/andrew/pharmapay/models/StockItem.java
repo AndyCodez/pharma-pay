@@ -14,7 +14,7 @@ public class StockItem {
     private Long id;
 
     @NotBlank(message = "Item name is required")
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     private String name;
 
     @NotNull(message = "Price is required")
