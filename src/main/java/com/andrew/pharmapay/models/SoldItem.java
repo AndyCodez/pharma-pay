@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
-import java.util.Set;
-
 @Entity
 public class SoldItem {
     @Id
@@ -24,9 +22,6 @@ public class SoldItem {
     @Min(value = 1, message = "Quantity must be greater than or equal to 1")
     @Column(name = "quantity")
     private int quantity;
-
-    @ManyToMany(mappedBy = "soldItems", fetch = FetchType.LAZY)
-    private Set<Bill> bills;
 
     public SoldItem() {
     }
@@ -59,4 +54,5 @@ public class SoldItem {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
 }
