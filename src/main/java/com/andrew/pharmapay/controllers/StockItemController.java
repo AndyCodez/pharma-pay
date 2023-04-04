@@ -32,4 +32,10 @@ public class StockItemController {
     public ResponseEntity<List<StockItem>> getAllStockItems() {
         return ResponseEntity.ok(stockItemService.getAllStockItems());
     }
+
+    @DeleteMapping("/stock-items/{id}")
+    public ResponseEntity deleteStockItem(@PathVariable Long id) {
+        stockItemService.deleteStockItem(id);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -3,7 +3,9 @@ package com.andrew.pharmapay.services;
 import com.andrew.pharmapay.exceptions.ItemAlreadyInStockException;
 import com.andrew.pharmapay.models.StockItem;
 import com.andrew.pharmapay.repositories.StockItemRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -24,5 +26,13 @@ public class StockItemService {
 
     public List<StockItem> getAllStockItems() {
         return stockItemRepository.findAll();
+    }
+
+    public void deleteStockItem(Long id) {
+        StockItem item =
+                stockItemRepository.findById(id).orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "StockItem not found")
+                );
+        stockItemRepository.delete(item);
     }
 }
