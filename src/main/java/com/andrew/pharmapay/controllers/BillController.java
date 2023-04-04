@@ -49,7 +49,7 @@ public class BillController {
         return ResponseEntity.ok(billService.addBillToCustomer(billId, customerId));
     }
 
-    @PutMapping("/bills/complete-sale/bills/{billId}")
+    @PutMapping("/complete-sale/bills/{billId}")
     public ResponseEntity<Bill> completeSale(@PathVariable Long billId) throws LessItemInStockException, ItemNotInStockException {
         return ResponseEntity.ok(billService.completeSale(billId));
     }
