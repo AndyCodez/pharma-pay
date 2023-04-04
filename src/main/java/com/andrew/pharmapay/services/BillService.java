@@ -3,9 +3,11 @@ package com.andrew.pharmapay.services;
 import com.andrew.pharmapay.exceptions.ItemNotInStockException;
 import com.andrew.pharmapay.exceptions.LessItemInStockException;
 import com.andrew.pharmapay.models.Bill;
+import com.andrew.pharmapay.models.Customer;
 import com.andrew.pharmapay.models.SoldItem;
 import com.andrew.pharmapay.models.StockItem;
 import com.andrew.pharmapay.repositories.BillRepository;
+import com.andrew.pharmapay.repositories.CustomerRepository;
 import com.andrew.pharmapay.repositories.StockItemRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +18,12 @@ import java.util.*;
 public class BillService {
     private final BillRepository billRepository;
     private final StockItemRepository stockItemRepository;
+    private final CustomerRepository customerRepository;
 
-    public BillService(BillRepository billRepository, StockItemRepository stockItemRepository) {
+    public BillService(BillRepository billRepository, StockItemRepository stockItemRepository, CustomerRepository customerRepository) {
         this.billRepository = billRepository;
         this.stockItemRepository = stockItemRepository;
+        this.customerRepository = customerRepository;
     }
 
     public Bill createBill(List<SoldItem> soldItems) throws ItemNotInStockException, LessItemInStockException {
@@ -51,5 +55,26 @@ public class BillService {
 
     public List<Bill> getAllBills() {
         return billRepository.findAll();
+    }
+
+    public Bill addBillToCustomer(Long billId, Long customerId) {
+        Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
+        Optional<Bill> optionalBill = billRepository.findById(billId);
+
+        if (optionalCustomer.isPresent()) {
+            Customer customer = optionalCustomer.get();
+
+            if (optionalBill.isPresent()) {
+                Bill bill = optionalBill.get();
+
+                customer.getBills().add(bill);
+                bill.setCustomer(customer);
+
+                customerRepository.save(customer);
+                return bill;
+            }
+        }
+
+        return null;
     }
 }

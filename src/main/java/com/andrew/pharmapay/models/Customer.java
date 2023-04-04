@@ -1,9 +1,17 @@
 package com.andrew.pharmapay.models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -15,6 +23,9 @@ public class Customer {
     @NotBlank(message = "Last name is required")
     @Column(name = "last_name")
     private String lastName;
+
+    @OneToMany(mappedBy = "customer")
+    private Set<Bill> bills = new HashSet<>();
 
     public Customer() {
     }
@@ -46,5 +57,13 @@ public class Customer {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public Set<Bill> getBills() {
+        return bills;
+    }
+
+    public void setBills(Set<Bill> bills) {
+        this.bills = bills;
     }
 }

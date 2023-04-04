@@ -1,5 +1,7 @@
 package com.andrew.pharmapay.models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 
@@ -7,6 +9,9 @@ import java.math.BigDecimal;
 import java.util.*;
 
 @Entity
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Bill {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,6 +28,10 @@ public class Bill {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "bill_id", referencedColumnName = "id")
     private List<SoldItem> soldItems = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
     public Bill() {
     }
@@ -63,5 +72,13 @@ public class Bill {
 
     public void setSoldItems(List<SoldItem> soldItems) {
         this.soldItems = soldItems;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 }
