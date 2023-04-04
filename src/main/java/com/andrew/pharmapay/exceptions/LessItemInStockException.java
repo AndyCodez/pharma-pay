@@ -10,6 +10,6 @@ public class LessItemInStockException extends Exception{
 
     @Override
     public String getMessage() {
-        return "Only " + stockItem.getQuantity() + " " + stockItem + " left";
+        return "Only " + stockItem.getQuantity() + " " + stockItem.getName() + " left";
     }
 }
