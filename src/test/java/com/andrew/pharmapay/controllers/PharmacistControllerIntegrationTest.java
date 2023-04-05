@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 
+import static com.andrew.pharmapay.models.Role.ADMIN;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -36,7 +37,7 @@ class PharmacistControllerIntegrationTest {
 
     @Test
     public void createPharmacist_withValidData_shouldReturnCreated() throws Exception {
-        Pharmacist pharmacist = new Pharmacist("John", "Doe", "johndoe@example.com");
+        Pharmacist pharmacist = new Pharmacist("John", "Doe", "johndoe@example.com", "pass123", ADMIN);
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -53,7 +54,7 @@ class PharmacistControllerIntegrationTest {
 
     @Test
     public void createPharmacist_withInvalidEmail_shouldReturnBadRequest() throws Exception {
-        Pharmacist pharmacist = new Pharmacist("John", "Doe", "invalidemail@");
+        Pharmacist pharmacist = new Pharmacist("John", "Doe", "invalidemail@", "pass123", ADMIN);
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -66,10 +67,10 @@ class PharmacistControllerIntegrationTest {
     @Test
     public void createPharmacist_withDuplicateEmail_shouldReturnBadRequest() throws Exception {
 
-        Pharmacist pharmacist1 = new Pharmacist("John", "Doe", "johndoe@example.com");
+        Pharmacist pharmacist1 = new Pharmacist("John", "Doe", "johndoe@example.com", "pass123", ADMIN);
         pharmacistRepository.save(pharmacist1);
 
-        Pharmacist pharmacist2 = new Pharmacist("James", "Known", "johndoe@example.com");
+        Pharmacist pharmacist2 = new Pharmacist("James", "Known", "johndoe@example.com", "pass123", ADMIN);
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -86,7 +87,7 @@ class PharmacistControllerIntegrationTest {
 
     @Test
     public void createPharmacist_withMissingFields_shouldReturnBadRequest() throws Exception {
-        Pharmacist pharmacist = new Pharmacist("", "","");
+        Pharmacist pharmacist = new Pharmacist("", "","", "pass123", ADMIN);
 
         ObjectMapper objectMapper = new ObjectMapper();
 
