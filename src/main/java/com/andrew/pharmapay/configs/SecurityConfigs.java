@@ -2,6 +2,7 @@ package com.andrew.pharmapay.configs;
 
 import com.andrew.pharmapay.repositories.PharmacistRepository;
 import com.andrew.pharmapay.utils.JwtUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -27,6 +28,9 @@ import java.util.Arrays;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfigs {
+    @Value("${frontend.client}")
+    private String frontend_client;
+
     private final PharmacistRepository pharmacistRepository;
     private final JwtUtil jwtUtil;
 
@@ -67,7 +71,7 @@ public class SecurityConfigs {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList(frontend_client));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
         configuration.setExposedHeaders(Arrays.asList("Authorization"));
