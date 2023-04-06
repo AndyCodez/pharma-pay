@@ -1,5 +1,6 @@
 package com.andrew.pharmapay.services;
 
+import com.andrew.pharmapay.models.Pharmacist;
 import com.andrew.pharmapay.payloads.AuthRequest;
 import com.andrew.pharmapay.payloads.AuthResponse;
 import com.andrew.pharmapay.repositories.PharmacistRepository;
@@ -30,10 +31,10 @@ public class AuthService {
             throw new Exception("Incorrect Username or Password", e);
         }
 
-        var user =  this.pharmacistRepository.findByEmail(request.getEmail()).orElseThrow();
+        Pharmacist pharmacist = (Pharmacist) this.pharmacistRepository.findByEmail(request.getEmail()).orElseThrow();
 
-        String jwtToken = jwtUtil.generateToken(user);
+        String jwtToken = jwtUtil.generateToken(pharmacist);
 
-        return new AuthResponse(jwtToken);
+        return new AuthResponse(jwtToken, pharmacist.getRole().name());
     }
 }
