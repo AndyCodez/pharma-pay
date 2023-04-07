@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
-public class SoldItem {
+public class SoldItem extends AuditTable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

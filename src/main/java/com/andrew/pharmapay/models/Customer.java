@@ -12,7 +12,7 @@ import java.util.Set;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
-public class Customer {
+public class Customer extends AuditTable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

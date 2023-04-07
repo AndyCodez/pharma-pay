@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Entity
-public class StockItem {
+public class StockItem extends AuditTable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
