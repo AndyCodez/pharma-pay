@@ -35,3 +35,6 @@ build/
 ### Configs
 application.properties.development
 application.properties.production
+
+### Logs
+pharma-pay.log

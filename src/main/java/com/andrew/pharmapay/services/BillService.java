@@ -7,6 +7,8 @@ import com.andrew.pharmapay.models.*;
 import com.andrew.pharmapay.repositories.BillRepository;
 import com.andrew.pharmapay.repositories.CustomerRepository;
 import com.andrew.pharmapay.repositories.StockItemRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,6 +18,8 @@ import java.util.*;
 
 @Service
 public class BillService {
+    Logger logger = LoggerFactory.getLogger(BillService.class);
+
     private final BillRepository billRepository;
     private final StockItemRepository stockItemRepository;
     private final CustomerRepository customerRepository;
@@ -27,6 +31,8 @@ public class BillService {
     }
 
     public Bill createBill(List<SoldItem> soldItems) throws ItemNotInStockException, LessItemInStockException {
+        logger.info("Creating a new bill.");
+
         Bill bill = new Bill();
 
         for (SoldItem soldItem: soldItems) {
@@ -36,8 +42,15 @@ public class BillService {
     }
 
     public Bill addItemToBill(Bill bill, SoldItem item) throws ItemNotInStockException, LessItemInStockException {
-        StockItem stockItem =  stockItemRepository.findByName(item.getName()).orElseThrow(() -> new ItemNotInStockException(item.getName()));
+        logger.info("Populating bill with items.");
+
+        StockItem stockItem =
+                stockItemRepository.findByName(
+                        item.getName()).orElseThrow(() -> new ItemNotInStockException(item.getName())
+                );
+
         if (item.getQuantity() > stockItem.getQuantity()) {
+            logger.warn("Requested quantity is more than the available stock.");
             throw new LessItemInStockException(stockItem);
         }
 
@@ -54,17 +67,29 @@ public class BillService {
     }
 
     public List<Bill> getAllBills() {
+        logger.info("Fectching all bills.");
+
         return billRepository.findAll();
     }
 
     public Bill addBillToCustomer(Long billId, Long customerId) {
+        logger.info("Assigning bill to customer");
+
         Customer customer =
                 customerRepository.findById(customerId).orElseThrow(
-                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer record not found")
+                        () -> {
+                            logger.error("Missing customer record");
+                            return new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer record not found");
+                        }
                 );
         Bill bill = billRepository.findById(billId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Bill record not found")
+                () -> {
+                    logger.error("Missing bill record");
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Bill record not found");
+                }
         );
+
+        logger.info("Successfully retrieved both bill and customer records");
 
         customer.getBills().add(bill);
         bill.setCustomer(customer);
@@ -74,17 +99,22 @@ public class BillService {
     }
 
     public Bill getBill(Long id) {
+        logger.trace("Fetching bill.");
+
         return billRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Bill record not found"));
     }
 
     public Bill completeSale(Long billId) throws ItemNotInStockException, LessItemInStockException {
+        logger.trace("Validating bill.");
+
         Bill bill =
                 billRepository.findById(billId).orElseThrow(
                         () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Bill record not found")
                 );
 
         if (bill.getStatus().name().equals(Status.PAID.name())) {
+            logger.error("Attempting to settle a bill that was already settled.");
             throw new BillAlreadySettledException("Bill Already Settled");
         }
 
@@ -94,6 +124,7 @@ public class BillService {
                     stockItemRepository.findByName(item.getName())
                             .orElseThrow(() -> new ItemNotInStockException(item.getName()));
             if (item.getQuantity() > stockItem.getQuantity()) {
+                logger.warn("Requested quantity is more than the available stock.");
                 throw new LessItemInStockException(stockItem);
             }
 

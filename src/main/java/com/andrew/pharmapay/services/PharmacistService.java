@@ -4,6 +4,8 @@ import com.andrew.pharmapay.models.Pharmacist;
 import com.andrew.pharmapay.payloads.RegistrationRequest;
 import com.andrew.pharmapay.repositories.PharmacistRepository;
 import com.andrew.pharmapay.utils.JwtUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,6 +14,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class PharmacistService {
+    Logger logger = LoggerFactory.getLogger(PharmacistService.class);
+
     private final PharmacistRepository pharmacistRepository;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
@@ -33,7 +37,7 @@ public class PharmacistService {
                             request.getRole());
             return pharmacistRepository.save(pharmacist);
         } catch (DataIntegrityViolationException e) {
-            // TODO: Log stack trace
+            logger.error("DataIntegrityViolationException", e);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email address already taken");
         }
     }
