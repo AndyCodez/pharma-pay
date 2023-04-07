@@ -1,5 +1,6 @@
 package com.andrew.pharmapay.configs;
 
+import com.andrew.pharmapay.models.Role;
 import com.andrew.pharmapay.repositories.PharmacistRepository;
 import com.andrew.pharmapay.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,8 +52,12 @@ public class SecurityConfigs {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/sign-in", "/api/v1/pharmacists")
-                .permitAll()
+                .requestMatchers("/api/v1/auth/sign-in").permitAll()
+                .requestMatchers("/api/v1/pharmacists").hasAnyAuthority(Role.ADMIN.name())
+                .requestMatchers(HttpMethod.POST, "/api/v1/customers").hasAnyAuthority(Role.ADMIN.name())
+                .requestMatchers(HttpMethod.POST, "/api/v1/stock-items").hasAnyAuthority(Role.ADMIN.name())
+                .requestMatchers(HttpMethod.PUT, "/api/v1/stock-items").hasAnyAuthority(Role.ADMIN.name())
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/stock-items").hasAnyAuthority(Role.ADMIN.name())
                 .anyRequest()
                 .authenticated()
                 .and()
