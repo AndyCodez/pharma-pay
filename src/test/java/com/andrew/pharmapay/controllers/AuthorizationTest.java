@@ -74,7 +74,7 @@ public class AuthorizationTest {
     }
 
     @Test
-    void onlyAdmins_shouldBeAbleToAccess_createCustomersEndpoint() throws Exception {
+    void allPharmacists_shouldBeAbleToAccess_createCustomersEndpoint() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/customers")
                         .contentType("application/json"))
                 .andExpect(MockMvcResultMatchers.status().isForbidden())
@@ -83,7 +83,7 @@ public class AuthorizationTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/customers")
                         .contentType("application/json")
                         .header("Authorization", "Bearer " + getAuthTokenForNormalPharmacist()))
-                .andExpect(MockMvcResultMatchers.status().isForbidden())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/customers")

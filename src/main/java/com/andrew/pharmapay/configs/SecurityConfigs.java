@@ -54,7 +54,7 @@ public class SecurityConfigs {
                 .authorizeHttpRequests()
                 .requestMatchers("/api/v1/auth/sign-in").permitAll()
                 .requestMatchers("/api/v1/pharmacists").hasAuthority(Role.ADMIN.name())
-                .requestMatchers(HttpMethod.POST, "/api/v1/customers").hasAuthority(Role.ADMIN.name())
+                .requestMatchers(HttpMethod.POST, "/api/v1/customers").hasAnyAuthority(Role.ADMIN.name(), Role.NORMAL_PHARMACIST.name())
                 .requestMatchers(HttpMethod.POST, "/api/v1/stock-items").hasAuthority(Role.ADMIN.name())
                 .requestMatchers(HttpMethod.PUT, "/api/v1/stock-items/**").hasAuthority(Role.ADMIN.name())
                 .requestMatchers(HttpMethod.PUT, "/api/v1/update-count/stock-items/**").hasAnyAuthority(Role.ADMIN.name(), Role.NORMAL_PHARMACIST.name())
