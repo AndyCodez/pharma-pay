@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @Service
 public class PharmacistService {
     Logger logger = LoggerFactory.getLogger(PharmacistService.class);
@@ -40,5 +42,9 @@ public class PharmacistService {
             logger.error("DataIntegrityViolationException", e);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email address already taken");
         }
+    }
+
+    public List<Pharmacist> getAllPharmacists() {
+        return pharmacistRepository.findAll();
     }
 }

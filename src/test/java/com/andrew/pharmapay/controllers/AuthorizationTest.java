@@ -193,6 +193,26 @@ public class AuthorizationTest {
                 .andReturn();
     }
 
+    @Test
+    void onlyAdmins_shouldBeAbleToAccess_listAllPharmacistsEndpoint() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/pharmacists")
+                        .contentType("application/json"))
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
+                .andReturn();
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/pharmacists")
+                        .contentType("application/json")
+                        .header("Authorization", "Bearer " + getAuthTokenForNormalPharmacist()))
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
+                .andReturn();
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/pharmacists")
+                        .contentType("application/json")
+                        .header("Authorization", "Bearer " + getAuthTokenForAdmin()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+    }
+
     private String getAuthTokenForAdmin() {
         UserDetails admin = new Pharmacist("John", "Doe", "johndoe@example.com", "pass123", ADMIN);
         when(userDetailsService.loadUserByUsername(admin.getUsername())).thenReturn(admin);
