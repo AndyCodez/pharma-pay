@@ -1,12 +1,14 @@
 package com.andrew.pharmapay.controllers;
 
 import com.andrew.pharmapay.models.StockItem;
+import com.andrew.pharmapay.payloads.StockItemResponse;
 import com.andrew.pharmapay.services.StockItemService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -29,8 +31,23 @@ public class StockItemController {
     }
 
     @GetMapping("/stock-items")
-    public ResponseEntity<List<StockItem>> getAllStockItems() {
-        return ResponseEntity.ok(stockItemService.getAllStockItems());
+    public ResponseEntity<List<StockItemResponse>> getAllStockItems() {
+        List<StockItemResponse> stockItemResponses = new ArrayList<>();
+        List<StockItem> stockItemList = stockItemService.getAllStockItems();
+        for (StockItem item: stockItemList) {
+            StockItemResponse response = new StockItemResponse(
+                    item.getId(),
+                    item.getName(),
+                    item.getPrice(),
+                    item.getQuantity(),
+                    item.getCreatedBy(),
+                    item.getCreatedDate(),
+                    item.getLastModifiedBy(),
+                    item.getLastModifiedDate()
+            );
+            stockItemResponses.add(response);
+        }
+        return ResponseEntity.ok(stockItemResponses);
     }
 
     @DeleteMapping("/stock-items/{id}")
