@@ -37,6 +37,7 @@ public class PharmacistController {
 
         for (Pharmacist pharmacist : pharmacistList){
             PharmacistResponse pharmacistResponse = new PharmacistResponse(
+                    pharmacist.getId(),
                     pharmacist.getFirstName(),
                     pharmacist.getLastName(),
                     pharmacist.getEmail(),

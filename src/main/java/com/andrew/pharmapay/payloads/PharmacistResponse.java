@@ -5,6 +5,7 @@ import com.andrew.pharmapay.models.Role;
 import java.time.LocalDateTime;
 
 public class PharmacistResponse {
+    private Long id;
     private String firstName;
     private String lastName;
     private String email;
@@ -17,7 +18,8 @@ public class PharmacistResponse {
     public PharmacistResponse() {
     }
 
-    public PharmacistResponse(String firstName, String lastName, String email, Role role, String createdBy, LocalDateTime createdDate, String lastModifiedBy, LocalDateTime lastModifiedDate) {
+    public PharmacistResponse(Long id, String firstName, String lastName, String email, Role role, String createdBy, LocalDateTime createdDate, String lastModifiedBy, LocalDateTime lastModifiedDate) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -26,6 +28,14 @@ public class PharmacistResponse {
         this.createdDate = createdDate;
         this.lastModifiedBy = lastModifiedBy;
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getFirstName() {
