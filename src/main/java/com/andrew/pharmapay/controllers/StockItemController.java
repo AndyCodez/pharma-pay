@@ -43,4 +43,9 @@ public class StockItemController {
     public ResponseEntity<StockItem> updateItem(@PathVariable Long stockItemId, @Valid @RequestBody StockItem stockItem) {
         return ResponseEntity.ok(stockItemService.updateItem(stockItemId, stockItem));
     }
+
+    @PutMapping("/update-count/stock-items/{stockItemId}")
+    public ResponseEntity<StockItem> updateCount(@PathVariable Long stockItemId, @Valid @RequestBody StockItem stockItem) {
+        return ResponseEntity.ok(stockItemService.updateCount(stockItemId, stockItem));
+    }
 }

@@ -47,4 +47,14 @@ public class StockItemService {
         stockItem1.setPrice(stockItem.getPrice());
         return stockItemRepository.save(stockItem1);
     }
+
+    public StockItem updateCount(Long id, StockItem stockItem) {
+        StockItem stockItem1 =
+                stockItemRepository.findById(id).orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Stock Item record not found")
+                );
+
+        stockItem1.setQuantity(stockItem.getQuantity());
+        return stockItemRepository.save(stockItem1);
+    }
 }
