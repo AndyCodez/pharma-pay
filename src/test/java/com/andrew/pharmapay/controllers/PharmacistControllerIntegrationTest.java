@@ -2,14 +2,16 @@ package com.andrew.pharmapay.controllers;
 
 import com.andrew.pharmapay.models.Pharmacist;
 import com.andrew.pharmapay.repositories.PharmacistRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.andrew.pharmapay.utils.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -30,26 +32,25 @@ class PharmacistControllerIntegrationTest {
     @Autowired
     private PharmacistRepository pharmacistRepository;
 
-    @AfterEach
-    public void tearDown() {
-        pharmacistRepository.deleteAll();
-    }
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @Test
     public void createPharmacist_withValidData_shouldReturnCreated() throws Exception {
-        Pharmacist pharmacist = new Pharmacist("John", "Doe", "johndoe@example.com", "pass123", ADMIN);
+        Pharmacist pharmacist = new Pharmacist("John", "Doe", "johndoe3@example.com", "pass123", ADMIN);
 
         ObjectMapper objectMapper = new ObjectMapper();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/pharmacists")
                 .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + getAuthToken())
                 .content(objectMapper.writeValueAsString(pharmacist)))
                 .andExpect(MockMvcResultMatchers.status().isCreated());
 
 
         List<Pharmacist> allPharmacists = pharmacistRepository.findAll();
         assertEquals(1, allPharmacists.size());
-        assertEquals("johndoe@example.com", allPharmacists.get(0).getEmail());
+        assertEquals("johndoe3@example.com", allPharmacists.get(0).getEmail());
     }
 
     @Test
@@ -60,6 +61,7 @@ class PharmacistControllerIntegrationTest {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/pharmacists")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + getAuthToken())
                         .content(objectMapper.writeValueAsString(pharmacist)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
@@ -67,6 +69,7 @@ class PharmacistControllerIntegrationTest {
     @Test
     public void createPharmacist_withDuplicateEmail_shouldReturnBadRequest() throws Exception {
 
+        String authToken = getAuthToken();
         Pharmacist pharmacist1 = new Pharmacist("John", "Doe", "johndoe@example.com", "pass123", ADMIN);
         pharmacistRepository.save(pharmacist1);
 
@@ -76,6 +79,7 @@ class PharmacistControllerIntegrationTest {
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/pharmacists")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + authToken)
                         .content(objectMapper.writeValueAsString(pharmacist2)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
@@ -93,7 +97,8 @@ class PharmacistControllerIntegrationTest {
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/pharmacists")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(pharmacist)))
+                .content(objectMapper.writeValueAsString(pharmacist))
+                .header("Authorization", "Bearer " + getAuthToken()))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andReturn();
 
@@ -103,5 +108,12 @@ class PharmacistControllerIntegrationTest {
         assertTrue(responseBody.contains("Email address is required"));
     }
 
-
+    private String getAuthToken() {
+        UserDetails admin = new Pharmacist("Admin", "Doe", "admindoe@example.com", "pass123", ADMIN);
+        // Set up security context
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(admin, null, admin.getAuthorities())
+        );
+        return jwtUtil.generateToken(admin);
+    }
 }

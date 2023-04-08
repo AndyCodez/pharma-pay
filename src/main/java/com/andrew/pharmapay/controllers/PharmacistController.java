@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
 @RestController
 @RequestMapping("/api/v1")
 @CrossOrigin
@@ -18,12 +20,11 @@ public class PharmacistController {
         this.pharmacistService = pharmacistService;
     }
 
-    // TODO: Only admin should have access to this endpoint in order to create pharmacists
     @PostMapping("/pharmacists")
     public ResponseEntity<Pharmacist> createPharmacistUser(@Valid @RequestBody RegistrationRequest request) {
         Pharmacist pharmacist= pharmacistService.createPharmacist(request);
 
-        return ResponseEntity.ok(pharmacist);
+        return ResponseEntity.created(URI.create("/api/v1/pharmacists" + pharmacist.getId())).body(pharmacist);
     }
 
 }
