@@ -16,14 +16,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static com.andrew.pharmapay.models.Role.ADMIN;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
+@Transactional
 class PharmacistControllerIntegrationTest {
 
     @Autowired
@@ -67,16 +70,21 @@ class PharmacistControllerIntegrationTest {
     }
 
     @Test
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void createPharmacist_withDuplicateEmail_shouldReturnBadRequest() throws Exception {
 
         String authToken = getAuthToken();
-        Pharmacist pharmacist1 = new Pharmacist("John", "Doe", "johndoe@example.com", "pass123", ADMIN);
-        pharmacistRepository.save(pharmacist1);
-
-        Pharmacist pharmacist2 = new Pharmacist("James", "Known", "johndoe@example.com", "pass123", ADMIN);
 
         ObjectMapper objectMapper = new ObjectMapper();
 
+        Pharmacist pharmacist1 = new Pharmacist("John", "Doe", "johndoe@example.com", "pass123", ADMIN);
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/pharmacists")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Bearer " + authToken)
+                        .content(objectMapper.writeValueAsString(pharmacist1)))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
+
+        Pharmacist pharmacist2 = new Pharmacist("James", "Known", "johndoe@example.com", "pass123", ADMIN);
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/pharmacists")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + authToken)
@@ -85,7 +93,6 @@ class PharmacistControllerIntegrationTest {
                 .andReturn();
 
         String responseBody = result.getResponse().getContentAsString();
-
         assertTrue(responseBody.contains("Email address already taken"));
     }
 

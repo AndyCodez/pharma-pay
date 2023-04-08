@@ -4,6 +4,7 @@ import com.andrew.pharmapay.models.Pharmacist;
 import com.andrew.pharmapay.payloads.AuthRequest;
 import com.andrew.pharmapay.utils.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,8 +23,9 @@ import static com.andrew.pharmapay.models.Role.NORMAL_PHARMACIST;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
+@Transactional
 public class AuthorizationTest {
 
     @Autowired

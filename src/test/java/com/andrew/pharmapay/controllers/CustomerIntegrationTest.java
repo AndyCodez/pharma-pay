@@ -25,7 +25,7 @@ import java.util.List;
 import static com.andrew.pharmapay.models.Role.ADMIN;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 @Transactional
 class CustomerIntegrationTest {
