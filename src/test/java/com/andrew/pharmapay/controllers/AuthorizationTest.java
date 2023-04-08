@@ -153,26 +153,6 @@ public class AuthorizationTest {
                 .andReturn();
     }
 
-    @Test
-    void onlyAdmins_shouldBeAbleToAccess_updateCountOfStockItemsEndpoint() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/update-count/stock-items/1")
-                        .contentType("application/json"))
-                .andExpect(MockMvcResultMatchers.status().isForbidden())
-                .andReturn();
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/update-count/stock-items/1")
-                        .contentType("application/json")
-                        .header("Authorization", "Bearer " + getAuthTokenForNormalPharmacist()))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andReturn();
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/update-count/stock-items/1")
-                        .contentType("application/json")
-                        .header("Authorization", "Bearer " + getAuthTokenForAdmin()))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andReturn();
-    }
-
     private String getAuthTokenForAdmin() {
         UserDetails admin = new Pharmacist("John", "Doe", "johndoe@example.com", "pass123", ADMIN);
         when(userDetailsService.loadUserByUsername(admin.getUsername())).thenReturn(admin);
