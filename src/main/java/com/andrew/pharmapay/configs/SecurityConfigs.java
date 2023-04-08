@@ -59,6 +59,8 @@ public class SecurityConfigs {
                 .requestMatchers(HttpMethod.PUT, "/api/v1/stock-items/**").hasAuthority(Role.ADMIN.name())
                 .requestMatchers(HttpMethod.PUT, "/api/v1/update-count/stock-items/**").hasAnyAuthority(Role.ADMIN.name(), Role.NORMAL_PHARMACIST.name())
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/stock-items/**").hasAuthority(Role.ADMIN.name())
+                .requestMatchers(HttpMethod.GET, "/api/v1/bills").hasAuthority(Role.ADMIN.name())
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/bills/**").hasAnyAuthority(Role.ADMIN.name(), Role.NORMAL_PHARMACIST.name())
                 .anyRequest()
                 .authenticated()
                 .and()

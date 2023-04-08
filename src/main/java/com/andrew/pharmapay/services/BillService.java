@@ -137,4 +137,12 @@ public class BillService {
         bill.setStatus(Status.PAID);
         return billRepository.save(bill);
     }
+
+    public void deleteBill(Long billId) {
+        Bill bill =
+                billRepository.findById(billId).orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Bill record not found")
+                );
+        billRepository.delete(bill);
+    }
 }

@@ -153,6 +153,46 @@ public class AuthorizationTest {
                 .andReturn();
     }
 
+    @Test
+    void allPharmacists_shouldBeAbleToAccess_deleteBillsEndpoint() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/bills/1")
+                        .contentType("application/json"))
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
+                .andReturn();
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/bills/1")
+                        .contentType("application/json")
+                        .header("Authorization", "Bearer " + getAuthTokenForNormalPharmacist()))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andReturn();
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/bills/1")
+                        .contentType("application/json")
+                        .header("Authorization", "Bearer " + getAuthTokenForAdmin()))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andReturn();
+    }
+
+    @Test
+    void onlyAdmins_shouldBeAbleToAccess_listAllBillsEndpoint() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bills")
+                        .contentType("application/json"))
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
+                .andReturn();
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bills")
+                        .contentType("application/json")
+                        .header("Authorization", "Bearer " + getAuthTokenForNormalPharmacist()))
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
+                .andReturn();
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bills")
+                        .contentType("application/json")
+                        .header("Authorization", "Bearer " + getAuthTokenForAdmin()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+    }
+
     private String getAuthTokenForAdmin() {
         UserDetails admin = new Pharmacist("John", "Doe", "johndoe@example.com", "pass123", ADMIN);
         when(userDetailsService.loadUserByUsername(admin.getUsername())).thenReturn(admin);

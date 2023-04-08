@@ -53,4 +53,10 @@ public class BillController {
     public ResponseEntity<Bill> completeSale(@PathVariable Long billId) throws LessItemInStockException, ItemNotInStockException {
         return ResponseEntity.ok(billService.completeSale(billId));
     }
+
+    @DeleteMapping("/bills/{billId}")
+    public ResponseEntity<Void> deleteBill(@PathVariable Long billId){
+        billService.deleteBill(billId);
+        return ResponseEntity.ok().build();
+    }
 }
